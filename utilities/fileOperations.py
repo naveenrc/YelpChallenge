@@ -7,6 +7,9 @@ class FileOperations:
     def getfile(cls, path):
         """
         Read json files
+
+        Arguments: path to the file along with name of file
+        Result: dataframe of resulting file
         """
         temp_list = []
         for line in open(path, 'r'):

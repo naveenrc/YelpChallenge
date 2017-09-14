@@ -27,7 +27,7 @@ if __name__ == '__main__':
     fo = FileOperations()
     path = os.path.dirname(__file__)
 
-    # path to images
+    # path to photos.json
     photos_path = os.path.join(path, '../yelpData/') + 'photos.json'
     photos_df = fo.getfile(photos_path)
 
