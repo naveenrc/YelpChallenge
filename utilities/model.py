@@ -127,7 +127,7 @@ def initialize_parameters():
 
     tf.set_random_seed(1)
 
-    W1 = tf.get_variable("W1", [25, 3072], initializer=tf.contrib.layers.xavier_initializer(seed=1))
+    W1 = tf.get_variable("W1", [25, 4800], initializer=tf.contrib.layers.xavier_initializer(seed=1))
     b1 = tf.get_variable("b1", [25, 1], initializer=tf.zeros_initializer())
     W2 = tf.get_variable("W2", [12, 25], initializer=tf.contrib.layers.xavier_initializer(seed=1))
     b2 = tf.get_variable("b2", [12, 1], initializer=tf.zeros_initializer())
@@ -139,7 +139,7 @@ def initialize_parameters():
                   "W2": W2,
                   "b2": b2,
                   "W3": W3,
-                  "b3": b3}
+                  "b3": b3,}
 
     return parameters
 
@@ -204,8 +204,8 @@ def get_data():
     # path to photos.json
     photos_path = os.path.join(path, '../yelpData/') + 'photos.json'
     photos_df = fo.getfile(photos_path)
-    X = np.array([cv2.imread(os.path.join(path, '../yelpData/resized/') + i + '.png')
-                  .reshape((1, 32*32*3)).T
+    X = np.array([cv2.imread(os.path.join(path, '../yelpData/resized48/') + i + '.png')
+                  .reshape((1, 40*40*3)).T
                   for i in photos_df['photo_id']]).T[0]
     Y = np.genfromtxt(os.path.join(path, '../yelpData/labels.csv'), delimiter=',')
     Y = Y.astype(int)
@@ -248,38 +248,62 @@ def random_mini_batches(X, Y, mini_batch_size=128, seed=0):
     return mini_batches
 
 
-def predict(X, y, parameters):
+def predict(X, parameters):
+    W1 = tf.convert_to_tensor(parameters["W1"])
+    b1 = tf.convert_to_tensor(parameters["b1"])
+    W2 = tf.convert_to_tensor(parameters["W2"])
+    b2 = tf.convert_to_tensor(parameters["b2"])
+    W3 = tf.convert_to_tensor(parameters["W3"])
+    b3 = tf.convert_to_tensor(parameters["b3"])
+
+    params = {"W1": W1,
+              "b1": b1,
+              "W2": W2,
+              "b2": b2,
+              "W3": W3,
+              "b3": b3,}
+
+    x = tf.placeholder("float", [4800, 1])
+
+    z3 = forward_propagation_for_predict(x, params)
+    p = tf.argmax(z3)
+
+    sess = tf.Session()
+    prediction = sess.run(p, feed_dict={x: X})
+
+    return prediction
+
+
+def forward_propagation_for_predict(X, parameters):
     """
-    This function is used to predict the results of a  n-layer neural network.
+    Implements the forward propagation for the model:
+    LINEAR -> RELU -> LINEAR -> RELU -> LINEAR -> SOFTMAX
 
     Arguments:
-    X -- data set of examples you would like to label
-    parameters -- parameters of the trained model
+    X -- input dataset placeholder, of shape (input size, number of examples)
+    parameters -- python dictionary containing your parameters
+                  "W1", "b1", "W2", "b2", "W3", "b3"
+                  the shapes are given in initialize_parameters
 
     Returns:
-    p -- predictions for the given dataset X
+    Z3 -- the output of the last LINEAR unit
     """
 
-    m = X.shape[1]
-    p = np.zeros((1, m), dtype=np.int)
+    # Retrieve the parameters from the dictionary "parameters"
+    W1 = parameters['W1']
+    b1 = parameters['b1']
+    W2 = parameters['W2']
+    b2 = parameters['b2']
+    W3 = parameters['W3']
+    b3 = parameters['b3']
+    # Numpy Equivalents:
+    Z1 = tf.add(tf.matmul(W1, X), b1)
+    A1 = tf.nn.relu(Z1)
+    Z2 = tf.add(tf.matmul(W2, A1), b2)
+    A2 = tf.nn.relu(Z2)
+    Z3 = tf.add(tf.matmul(W3, A2), b3)
 
-    # Forward propagation
-    a3, caches = forward_propagation(X, parameters)
-
-    # convert probas to 0/1 predictions
-    for i in range(0, a3.shape[1]):
-        if a3[0, i] > 0.5:
-            p[0, i] = 1
-        else:
-            p[0, i] = 0
-
-    # print results
-
-    # print ("predictions: " + str(p[0,:]))
-    # print ("true labels: " + str(y[0,:]))
-    print("Accuracy: " + str(np.mean((p[0, :] == y[0, :]))))
-
-    return p
+    return Z3
 
 
 def convert_to_one_hot(Y, C):

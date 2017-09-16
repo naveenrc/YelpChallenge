@@ -8,18 +8,18 @@ from multiprocessing import Pool
 
 def resize_image(file):
     """
-    Resize image to 32 x32 which follows INTER_AREA interpolation
+    Resize image to im_size x im_size which follows INTER_AREA interpolation
 
     Arguments: reads image
 
     Returns: writes resized image
     """
     path = os.path.dirname(__file__)
-    temp_path = os.path.join(path, '../yelpData/photos/') + file + '.jpg'
-    im_size = 32
+    temp_path = os.path.join(path, '../../YelpPhotos/') + file + '.jpg'
     img = cv2.imread(temp_path)
+    im_size = 40
     resized = cv2.resize(img, (im_size, im_size), interpolation=cv2.INTER_AREA)
-    cv2.imwrite(os.path.join(path, '../yelpData/resized/') + file + '.png', resized)
+    cv2.imwrite(os.path.join(path, '../yelpData/resized48/') + file + '.png', resized)
 
 
 if __name__ == '__main__':

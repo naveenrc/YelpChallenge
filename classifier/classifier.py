@@ -5,9 +5,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
 import os
+import time
 
 
-def model(X_train, Y_train, X_test, Y_test, learning_rate=0.0001,
+def model(X_train, Y_train, X_test, Y_test, learning_rate=0.0005,
           num_epochs=1500, minibatch_size=128, print_cost=True):
     """
     Implements a three-layer tensorflow neural network:
@@ -124,8 +125,10 @@ if __name__ == '__main__':
     Y_test = md.convert_to_one_hot(y_test.T, 6)
 
     print(X_train.shape, Y_train.shape, X_test.shape, Y_test.shape)
-    parameters = model(X_train, Y_train, X_test, Y_test, num_epochs=1500)
-
+    start = time.time()
+    parameters = model(X_train, Y_train, X_test, Y_test, num_epochs=1500, learning_rate=0.01)
+    stop = time.time()
+    print("Time elapsed: " + str(stop-start))
     path = os.path.dirname(__file__)
-    param_path = os.path.join(path, '../yelpData/') + 'parameters.npy'
+    param_path = os.path.join(path, '../yelpData/') + 'parameters_3.npy'
     np.save(param_path, parameters)
