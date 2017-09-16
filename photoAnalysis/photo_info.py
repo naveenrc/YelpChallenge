@@ -17,7 +17,7 @@ if __name__ == '__main__':
     # Duplicate images
     print('Duplicated images: ' + str(photos_df.reset_index().duplicated(subset=['photo_id']).any()))
 
-    # Sanity check for missing data
+    # Sanity check for missing yelpData
     print('Any images without labels: ' + str(photos_df['label'].isnull().any()))
     print('Any missing business id: ' + str(photos_df['business_id'].isnull().any()))
 
@@ -26,3 +26,6 @@ if __name__ == '__main__':
     # Display image labels count
     print(photos_df['label'].value_counts().reset_index().
           rename(columns={'index': 'label', 'label': 'count'}))
+
+    print('-----------------------------------------')
+    print('Number of photos with caption: ' + str(len(photos_df['caption'].value_counts())))
