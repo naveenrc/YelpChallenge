@@ -1,5 +1,6 @@
 import os
 from utilities.fileOperations import FileOperations
+import numpy as np
 
 if __name__ == '__main__':
     fo = FileOperations()
@@ -28,4 +29,6 @@ if __name__ == '__main__':
           rename(columns={'index': 'label', 'label': 'count'}))
 
     print('-----------------------------------------')
-    print('Number of photos with caption: ' + str(len(photos_df['caption'].value_counts())))
+    photos_df['caption'].replace('', np.nan, inplace=True)
+    photos_df.dropna(subset=['caption'], inplace=True)
+    print('Number of photos with caption: ' + str(len(photos_df)))
