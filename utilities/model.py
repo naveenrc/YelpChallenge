@@ -127,7 +127,7 @@ def initialize_parameters():
 
     tf.set_random_seed(1)
 
-    W1 = tf.get_variable("W1", [25, 4800], initializer=tf.contrib.layers.xavier_initializer(seed=1))
+    W1 = tf.get_variable("W1", [25, 12288], initializer=tf.contrib.layers.xavier_initializer(seed=1))
     b1 = tf.get_variable("b1", [25, 1], initializer=tf.zeros_initializer())
     W2 = tf.get_variable("W2", [12, 25], initializer=tf.contrib.layers.xavier_initializer(seed=1))
     b2 = tf.get_variable("b2", [12, 1], initializer=tf.zeros_initializer())
@@ -204,12 +204,61 @@ def get_data():
     # path to photos.json
     photos_path = os.path.join(path, '../yelpData/') + 'photos.json'
     photos_df = fo.getfile(photos_path)
-    X = np.array([cv2.imread(os.path.join(path, '../yelpData/resized48/') + i + '.png')
-                  .reshape((1, 40*40*3)).T
+    X = np.array([cv2.imread(os.path.join(path, '../yelpData/resized64/') + i + '.png')
+                  .reshape((1, 64*64*3)).T
                   for i in photos_df['photo_id']]).T[0]
     Y = np.genfromtxt(os.path.join(path, '../yelpData/labels.csv'), delimiter=',')
     Y = Y.astype(int)
     return X.T, Y.reshape(len(Y), 1)
+
+
+def get_data_chunk():
+    """
+    Returns: X, Y matrix
+    """
+    path = os.path.dirname(__file__)
+    # path to photos.json
+    photos_path = os.path.join(path, '../yelpData/') + 'photos.json'
+    photos_df = fo.getfile(photos_path)
+
+    Y = np.genfromtxt(os.path.join(path, '../yelpData/labels.csv'), delimiter=',')
+    Y = Y.astype(int)
+    return photos_df, Y.reshape(len(Y), 1)
+
+
+def random_mini_batches_chunk(photos_df, Y, mini_batch_size=128, seed=0):
+    """
+    Creates a list of random minibatches from (X, Y)
+
+    Arguments:
+    X -- input data, of shape (input size, number of examples)
+    Y -- true "label" vector (1 for blue dot / 0 for red dot), of shape (1, number of examples)
+    mini_batch_size -- size of the mini-batches, integer
+
+    Returns:
+    mini_batches -- list of synchronous (mini_batch_X, mini_batch_Y)
+    """
+
+    np.random.seed(seed)
+    m = len(photos_df)  # number of training examples
+    mini_batches = []
+
+    # Partition (shuffled_X, shuffled_Y). Minus the end case.
+    num_complete_minibatches = math.floor(m / mini_batch_size)  # number of mini batches of size mini_batch_size
+    for k in range(0, num_complete_minibatches):
+        mini_batch_X = photos_df[k * mini_batch_size:(k + 1) * mini_batch_size]
+        mini_batch_Y = Y[k * mini_batch_size:(k + 1) * mini_batch_size]
+        mini_batch = (mini_batch_X, mini_batch_Y)
+        mini_batches.append(mini_batch)
+
+    # Handling the end case (last mini-batch < mini_batch_size)
+    if m % mini_batch_size != 0:
+        mini_batch_X = photos_df[num_complete_minibatches * mini_batch_size:]
+        mini_batch_Y = Y[num_complete_minibatches * mini_batch_size:]
+        mini_batch = (mini_batch_X, mini_batch_Y)
+        mini_batches.append(mini_batch)
+
+    return mini_batches
 
 
 def random_mini_batches(X, Y, mini_batch_size=128, seed=0):
@@ -228,7 +277,6 @@ def random_mini_batches(X, Y, mini_batch_size=128, seed=0):
     np.random.seed(seed)
     m = X.shape[1]  # number of training examples
     mini_batches = []
-
 
     # Partition (shuffled_X, shuffled_Y). Minus the end case.
     num_complete_minibatches = math.floor(m / mini_batch_size)  # number of mini batches of size mini_batch_size
@@ -263,7 +311,7 @@ def predict(X, parameters):
               "W3": W3,
               "b3": b3,}
 
-    x = tf.placeholder("float", [4800, 1])
+    x = tf.placeholder("float", [12288, 1])
 
     z3 = forward_propagation_for_predict(x, params)
     p = tf.argmax(z3)
