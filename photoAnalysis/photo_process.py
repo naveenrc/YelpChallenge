@@ -17,7 +17,7 @@ def resize_image(file):
     path = os.path.dirname(__file__)
     temp_path = os.path.join(path, '../../YelpPhotos/') + file + '.jpg'
     img = cv2.imread(temp_path)
-    im_size = 40
+    im_size = int(input('Enter image size(64 if you need 64x64 images):'))
     resized = cv2.resize(img, (im_size, im_size), interpolation=cv2.INTER_AREA)
     cv2.imwrite(os.path.join(path, '../yelpData/resized48/') + file + '.png', resized)
 
