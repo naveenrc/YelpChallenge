@@ -1,9 +1,34 @@
 ### Yelp Dataset challenge
-This project is about classifying images obtained from yelp dataset which can be downloaded from here https://www.yelp.com/dataset.<br>
-### Minimum Requirements
-* 12 GB RAM
+This project is about Natural Language processing and classifying images obtained from yelp dataset which can be downloaded from here https://www.yelp.com/dataset.<br>
+
+### Requirements
+NLP
 * python 3.5
-### Setup
+* spacy
+* gensim
+* pyLDAvis
+* Word2vec
+* Bokeh
+* tSNE
+
+Image classification
+* python 3.5
+* tensorflow
+* opencv
+* 12 GB RAM
+
+### NLP
+Modern_NLP.ipynb walks through the following topics(best viewed on nb viewer)
+1. A tour of the dataset
+2. Introduction to text processing with spaCy
+3. Automatic phrase modeling
+4. Topic modeling with LDA
+5. Visualizing topic models with pyLDAvis
+6. Word vector models with word2vec
+7. Visualizing word2vec with t-SNE
+
+
+### Setup for image classification
 1. Install project requirements
 2. Create a folder yelpData and move the extracted data from yelp into this folder.
 3. Run photo_process.py to transform the original images to the size you desire. Enter a photo size when prompted.
@@ -18,4 +43,4 @@ python ./classifier/classifier.py
 python ./classifier/predict.py
 ```
 
-<a href="https://drive.google.com/file/d/0BypHvhe9eW_KcWFDa3pyZlNJams/view?usp=sharing">Report for this project can be found here</a>
+<a href="https://drive.google.com/file/d/0BypHvhe9eW_KcWFDa3pyZlNJams/view?usp=sharing">Report for image classification can be found here</a>
