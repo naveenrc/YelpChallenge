@@ -18,7 +18,7 @@ Image classification
 * 12 GB RAM
 
 ### NLP
-Modern_NLP.ipynb walks through the following topics(best viewed on nb viewer)
+Modern_NLP.ipynb walks through the following topics(<a href="http://nbviewer.jupyter.org/github/naveenrc/YelpChallenge/blob/07f275a4d1a1841dc1141a475fa168edd225b800/Modern_NLP.ipynb">best viewed on nb viewer</a>)
 1. A tour of the dataset
 2. Introduction to text processing with spaCy
 3. Automatic phrase modeling
