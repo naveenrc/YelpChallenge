@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from scipy import ndimage
 
 path = os.path.dirname(__file__)
-param_path = os.path.join(path, '../yelpData/') + 'parameters_5.npy'
+param_path = os.path.join(path, '../yelpData/') + 'parameters_4.npy'
 params = np.load(param_path).item()
 img_size = int(input('Enter image size, example x if (x,x): '))
 photo_name = input('Enter image to be predict without extension(.png or jgp): ')
