@@ -6,7 +6,7 @@ import sys
 from multiprocessing import Pool
 
 
-def resize_image(file):
+def resize_image(inp):
     """
     Resize image to im_size x im_size which follows INTER_AREA interpolation
 
@@ -15,11 +15,10 @@ def resize_image(file):
     Returns: writes resized image
     """
     path = os.path.dirname(__file__)
-    temp_path = os.path.join(path, '../../YelpPhotos/') + file + '.jpg'
+    temp_path = os.path.join(path, '../yelpData/yelpPhotos/') + inp[0] + '.jpg'
     img = cv2.imread(temp_path)
-    im_size = int(input('Enter image size(64 if you need 64x64 images):'))
-    resized = cv2.resize(img, (im_size, im_size), interpolation=cv2.INTER_AREA)
-    cv2.imwrite(os.path.join(path, '../yelpData/resized48/') + file + '.png', resized)
+    resized = cv2.resize(img, (inp[1], inp[1]), interpolation=cv2.INTER_AREA)
+    cv2.imwrite(os.path.join(path, '../yelpData/resized64/') + inp[0] + '.png', resized)
 
 
 if __name__ == '__main__':
@@ -30,6 +29,7 @@ if __name__ == '__main__':
     # path to photos.json
     photos_path = os.path.join(path, '../yelpData/') + 'photos.json'
     photos_df = fo.getfile(photos_path)
+
 
     # map strings labels to integers
     labels = {'food': 0,
@@ -54,6 +54,13 @@ if __name__ == '__main__':
     images = photos_df['photo_id']
     # Multiprocessing
     p = Pool(4)
+    # Read image size
+    imsize = int(input('Enter image size to resize: '))
+    # Create directory for resized images
+    if not os.path.exists(os.path.join(path, '../yelpData', 'resized' + str(imsize))):
+        os.makedirs(os.path.join(path, '../yelpData', 'resized' + str(imsize)))
+
+    images = [(image, imsize) for image in images]
     # Display progress
     for i, _ in enumerate(p.imap_unordered(resize_image, images), 1):
         sys.stderr.write('\rdone {0:%}'.format(i / len(images)))
