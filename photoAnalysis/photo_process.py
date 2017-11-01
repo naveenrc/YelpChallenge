@@ -18,7 +18,7 @@ def resize_image(inp):
     temp_path = os.path.join(path, '../yelpData/yelpPhotos/') + inp[0] + '.jpg'
     img = cv2.imread(temp_path)
     resized = cv2.resize(img, (inp[1], inp[1]), interpolation=cv2.INTER_AREA)
-    cv2.imwrite(os.path.join(path, '../yelpData/resized64/') + inp[0] + '.png', resized)
+    cv2.imwrite(os.path.join(path, '../yelpData/resized'+str(inp[1])+'/') + inp[0] + '.png', resized)
 
 
 if __name__ == '__main__':
@@ -69,4 +69,4 @@ if __name__ == '__main__':
     # Record stop time
     stop = time.clock()
 
-    print('\nTime taken to resize images except food images: ' + str(stop-start))
+    print('\nTime taken to resize images: ' + str(stop-start))
