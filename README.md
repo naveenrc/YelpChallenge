@@ -31,8 +31,8 @@ Modern_NLP.ipynb walks through the following topics(<a href="http://nbviewer.jup
 
 ### Setup for image classification
 1. Install project requirements
-2. Create a folder yelpData and move the extracted data from yelp into this folder.
-3. In photo_process.py change im.resize size to the size you desire Ex: 64 x 64 or 32 x 32.
+2. Create a folder yelpData and move the extracted data from yelp into this folder. Move the photos to 'yelpData/yelpPhotos' directory
+3. Run photo_process.py, enter the size you desire to resize to Ex: 64 for 64 x 64 or 32 for 32 x 32.
 4. Run photo_info.py to get information about the photos
 5. Run classifier.py to start the model (may take longer, 6 to 10 hours without a GPU)
 6. Run predict.py to predict image label
